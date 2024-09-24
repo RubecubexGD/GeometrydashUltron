@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head> <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1265819367543672926/1287738377319485533/20240923_083216.png?ex=66f2a352&is=66f151d2&hm=606d6f1bb8772d623c223316135f717bb78aebd6999b591a0eab80275adaaae3&">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>search on youtube</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ff0000;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .video {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .thumbnail {
+            width: 120px;
+            height: 90px;
+            margin-right: 20px;
+        }
+        .channel-thumbnail {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .video-info {
+            flex: 1;
+        }
+        .video-info h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .video-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .video-info a {
+            color: #ff0000;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>youtube search</h1>
+    </header>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="query" placeholder="enter your search ">
+            <button onclick="searchYouTube()">Search </button>
+        </div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function searchYouTube() {
+            const query = document.getElementById('query').value;
+            const apiKey = 'AIzaSyDGBmw8J7pmrorb6vPW-fN0PgHw_rRFgtg';
+            const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${query}&key=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const results = document.getElementById('results');
+                    results.innerHTML = '';
+                    data.items.forEach(item => {
+                        const video = document.createElement('div');
+                        video.classList.add('video');
+                        video.innerHTML = `
+                            <img class="thumbnail" src="${item.snippet.thumbnails.default.url}" alt="Thumbnail">
+                            <div class="video-info">
+                                <h3>${item.snippet.title}</h3>
+                                <p>${item.snippet.description}</p>
+                                <a href="https://www.youtube.com/watch?v=${item.id.videoId}" target="_blank">watch on youtube</a>
+                                <br>
+                                <a href="https://www.youtube.com/channel/${item.snippet.channelId}" target="_blank">
+                                    <img class="channel-thumbnail" src="https://www.googleapis.com/youtube/v3/channels?part=snippet&id=${item.snippet.channelId}&key=${apiKey}" alt="Channel Thumbnail">
+                                    Visite o Canal
+                                </a>
+                            </div>
+                        `;
+                        results.appendChild(video);
+                    });
+                })
+                .catch(error => console.error('Erro:', error));
+        }
+    </script>
+</body>
+</html>
